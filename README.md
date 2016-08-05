@@ -5,5 +5,5 @@ This is just a migration of the iRODS 3 `irods-setavu-module` package to an iROD
 
 ## Compilation
 
-A shared object, `libmsiSetAVU.so`, is build by a CentOS 6.6 docker container. To build the object,
+A shared object, `libmsiSetAVU.so`, is build by a CentOS 6 docker container. To build the object,
 just run the `build.sh` script. The object will be built in the `src/` subdirectory.
