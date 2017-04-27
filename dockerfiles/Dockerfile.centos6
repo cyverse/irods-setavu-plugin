@@ -1,5 +1,5 @@
 FROM centos:6
-MAINTAINER tedgin@cyverse.org
+MAINTAINER Tony Edgin <tedgin@cyverse.org>
 
 RUN yum --assumeyes install \
         boost gcc-c++ openssl-devel \
@@ -12,3 +12,4 @@ VOLUME /src
 WORKDIR /src
 
 CMD bash
+
