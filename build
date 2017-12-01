@@ -1,14 +1,53 @@
-#! /bin/sh
+#! /bin/bash
+#
+# Usage:
+#  build [OS...]
+#
+# Parameters:
+#  OS  an operating system to build the package for: centos6 or centos7
+#
+# Builds the iRODS msiSetAVU plugin packages. It writes each package into an OS
+# specific subdirectory of libraries/.
+#
+
+readonly AllOSes=(centos6 centos7)
 
 
 main()
 {
-  for os in centos6 centos7
+  local oses=("$@")
+
+  if [ ${#oses} -eq 0 ]
+  then
+    oses=(${AllOSes[*]})
+  else
+    for candidateOS in ${oses[*]}
+    do
+      local verified=false
+
+      for os in ${AllOSes[*]}
+      do
+        if [ "$candidateOS" = "$os" ]
+        then
+          verified=true
+          break
+        fi
+      done
+      
+      if [ "$verified" = false ]
+      then
+        printf 'The OS %s is unsupported\n' "$candidateOS" >&2
+        return 1
+      fi
+    done
+  fi
+
+  for os in ${oses[*]}
   do
     docker build --file dockerfiles/Dockerfile."$os" --tag irods-dev-build:4.1.10-"$os" .
 
     docker run --rm --tty --user=$(id -u):$(id -g) --volume=$(pwd)/src:/src --name=setavu-builder \
-	             irods-dev-build:4.1.10-"$os" make clean all
+	    irods-dev-build:4.1.10-"$os" make clean all
 
     mkdir --parents libraries/"$os"
     mv --force src/libmsiSetAVU.so libraries/"$os"
@@ -18,4 +57,4 @@ main()
 
 set -e
 
-main
+main "$@"
