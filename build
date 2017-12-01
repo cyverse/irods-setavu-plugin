@@ -42,15 +42,19 @@ main()
     done
   fi
 
+  local baseDir=$(dirname $(readlink --canonicalize "$0"))
+
   for os in ${oses[*]}
   do
-    docker build --file dockerfiles/Dockerfile."$os" --tag irods-dev-build:4.1.10-"$os" .
+    docker build --file "$baseDir"/dockerfiles/Dockerfile."$os" --tag irods-dev-build:4.1.10-"$os" \
+                 "$baseDir"
 
-    docker run --rm --tty --user=$(id -u):$(id -g) --volume=$(pwd)/src:/src --name=setavu-builder \
-	    irods-dev-build:4.1.10-"$os" make clean all
+    docker run --rm --tty \
+               --user=$(id -u):$(id -g) --volume="$baseDir"/src:/src --name=setavu-builder \
+	             irods-dev-build:4.1.10-"$os" make clean all
 
-    mkdir --parents libraries/"$os"
-    mv --force src/libmsiSetAVU.so libraries/"$os"
+    mkdir --parents "$baseDir"/libraries/"$os"
+    mv --force "$baseDir"/src/libmsiSetAVU.so "$baseDir"/libraries/"$os"
   done
 }
 
