@@ -33,7 +33,7 @@ main()
           break
         fi
       done
-      
+
       if [ "$verified" = false ]
       then
         printf 'The OS %s is unsupported\n' "$candidateOS" >&2
@@ -49,12 +49,16 @@ main()
     docker build --file "$baseDir"/dockerfiles/Dockerfile."$os" --tag irods-dev-build:4.1.10-"$os" \
                  "$baseDir"
 
-    docker run --rm --tty \
-               --user=$(id -u):$(id -g) --volume="$baseDir"/src:/src --name=setavu-builder \
+    local library="$baseDir"/libraries/"$os"
+    local scratch="$baseDir"/scratch/"$os"
+
+    mkdir --parents "$library" "$scratch"
+    cp --update "$baseDir"/src/* "$scratch"
+
+    docker run --rm --tty --user=$(id -u):$(id -g) --volume="$scratch":/src --name=setavu-builder \
 	             irods-dev-build:4.1.10-"$os" make clean all
 
-    mkdir --parents "$baseDir"/libraries/"$os"
-    mv --force "$baseDir"/src/libmsiSetAVU.so "$baseDir"/libraries/"$os"
+    mv --force "$scratch"/libmsiSetAVU.so "$library"
   done
 }
 
