@@ -1,0 +1,19 @@
+#! /bin/bash
+#
+# Usage:
+#  clean
+#
+# Removes all build products.
+#
+
+
+main()
+{
+  local baseDir=$(dirname $(readlink --canonicalize "$0"))
+
+  rm --force --recursive "$baseDir"/libraries "$baseDir"/scratch
+  docker images --quiet --filter reference=irods-dev-build | xargs --no-run-if-empty docker rmi
+}
+
+
+main
