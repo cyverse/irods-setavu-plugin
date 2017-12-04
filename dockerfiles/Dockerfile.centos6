@@ -1,15 +1,16 @@
 FROM centos:6
 MAINTAINER Tony Edgin <tedgin@cyverse.org>
 
-RUN yum --assumeyes install \
+RUN rpm --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 && \
+    yum --assumeyes install \
         boost gcc-c++ openssl-devel \
         ftp://ftp.renci.org/pub/irods/releases/4.1.10/centos6/irods-dev-4.1.10-centos6-x86_64.rpm \
-        ftp://ftp.renci.org/pub/irods/releases/4.1.10/centos6/irods-runtime-4.1.10-centos6-x86_64.rpm
-
-RUN mkdir /src
+        ftp://ftp.renci.org/pub/irods/releases/4.1.10/centos6/irods-runtime-4.1.10-centos6-x86_64.rpm && \
+    mkdir /src && \
+    yum clean all && \
+    rm --force --recursive /var/cache/yum
 
 VOLUME /src
 WORKDIR /src
 
-CMD bash
-
+CMD [ "bash" ]

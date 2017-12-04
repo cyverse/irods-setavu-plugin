@@ -1,14 +1,16 @@
 FROM centos:7
 MAINTAINER Tony Edgin <tedgin@cyverse.org>
 
-RUN yum --assumeyes install \
+RUN rpmkeys --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 && \
+    yum --assumeyes install \
         gcc-c++ make \
         ftp://ftp.renci.org/pub/irods/releases/4.1.10/centos7/irods-dev-4.1.10-centos7-x86_64.rpm \
-        ftp://ftp.renci.org/pub/irods/releases/4.1.10/centos7/irods-runtime-4.1.10-centos7-x86_64.rpm
-
-RUN mkdir /src
+        ftp://ftp.renci.org/pub/irods/releases/4.1.10/centos7/irods-runtime-4.1.10-centos7-x86_64.rpm && \
+    mkdir /src && \
+    yum clean all && \
+    rm --force --recursive /var/cache/yum
 
 VOLUME /src
 WORKDIR /src
 
-CMD bash
+CMD [ "bash" ]
