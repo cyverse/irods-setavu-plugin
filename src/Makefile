@@ -5,6 +5,6 @@ all: libmsiSetAVU.so
 
 libmsiSetAVU.so: msiSetAVU.cpp
 	g++ ${OPTS} ${INC} -o $@ $^ /usr/lib/libirods_client.a
-        
+
 clean:
-	@rm -f ./*.so
+	@rm --force libmsiSetAVU.so
