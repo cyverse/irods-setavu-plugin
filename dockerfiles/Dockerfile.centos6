@@ -1,5 +1,8 @@
 FROM centos:6
-MAINTAINER Tony Edgin <tedgin@cyverse.org>
+
+# Switch to using CentOS 6 Vault repo
+COPY yum.repos.d/CentOS6-Base.repo /etc/yum.repos.d/CentOS-Base.repo
+COPY yum.repos.d/CentOS6-Vault.repo /etc/yum.repos.d/CentOS-Vault.repo
 
 RUN rpm --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 && \
     yum --assumeyes install \
